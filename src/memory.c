@@ -1,4 +1,4 @@
-#include "../include/hardware.h"
+#include <hardware.h>
 
 void initMemory(){
     MEMORY = malloc(sizeof(uint8_t)*MEMORY_SIZE);

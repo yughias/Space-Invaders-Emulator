@@ -1,4 +1,4 @@
-#include "../include/SDL_MAINLOOP.h"
+#include <SDL_MAINLOOP.h>
 
 #define MAX_NAME  64
 

@@ -1,4 +1,4 @@
-#include "../include/hardware.h"
+#include <hardware.h>
 
 void initShifter(){
     SHIFT_16 = malloc(sizeof(uint16_t));

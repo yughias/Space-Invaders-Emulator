@@ -1,4 +1,4 @@
-#include "../include/hardware.h"
+#include <hardware.h>
 
 void initSounds(){
     char filename[] = "data/X.wav";

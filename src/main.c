@@ -1,5 +1,5 @@
-#include "../include/hardware.h"
-#include "../include/SDL_MAINLOOP.h"
+#include <hardware.h>
+#include <SDL_MAINLOOP.h>
 
 void render();
 void handleInput();

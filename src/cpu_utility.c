@@ -1,4 +1,4 @@
-#include "../include/cpu_utility.h"
+#include <cpu_utility.h>
 
 void setParity(uint16_t val){
     int counter = 0;
