@@ -8,8 +8,9 @@
 #define MIRROR_MASK 0x3FFF
 
 // I/0 SPACE
-uint8_t IO_R[4];
-uint8_t IO_W[7];
+uint8_t IO_R[IO_R_SIZE];
+uint8_t IO_W[IO_W_SIZE];
+uint8_t IO_W_prev[IO_W_SIZE];
 
 //RAM
 uint8_t* MEMORY;

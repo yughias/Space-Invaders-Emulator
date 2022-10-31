@@ -5,6 +5,7 @@ void initMemory(){
     memset(MEMORY, 0, MEMORY_SIZE);
     memset(IO_R, 0, IO_R_SIZE);
     memset(IO_W, 0, IO_W_SIZE);
+    memset(IO_W_prev, 0, IO_W_SIZE);
 }
 
 void freeMemory(){

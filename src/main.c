@@ -23,7 +23,7 @@ void setup(){
 void loop(){
     bool midInterrupt = false;
     for(cycles = 0; cycles < 2 * 1e6 / 60;){
-        memset(IO_W, 0, IO_W_SIZE);
+        memcpy(IO_W_prev, IO_W, IO_W_SIZE);
         stepCPU();
         updateShifter();
         if(midInterrupt == false && cycles >= (1e6 / 60)){
