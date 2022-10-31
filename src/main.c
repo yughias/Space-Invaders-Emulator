@@ -34,7 +34,6 @@ void loop(){
     }
     generateInterrupt(0x10);
     render();
-    handleInput();
 }
 
 void render(){
@@ -53,48 +52,46 @@ void render(){
     }
 }
 
-void handleInput(){
-    if(isKeyReleased){
-        if(keyReleased == '1')
-            IO_R[1] &= ~0b00000001;
-        if(keyReleased == '2')
-            IO_R[1] &= ~0b00000010;
-        if(keyReleased == '3')
-            IO_R[1] &= ~0b00000100;
-        if(keyReleased == 's')
-            IO_R[1] &= ~0b00010000;
-        if(keyReleased == 'a')
-            IO_R[1] &= ~0b00100000;
-        if(keyReleased == 'd')
-            IO_R[1] &= ~0b01000000;
-        if(keyReleased == 'k')
-            IO_R[2] &= ~0b00010000;
-        if(keyReleased == 'j')
-            IO_R[2] &= ~0b00100000;
-        if(keyReleased == 'l')
-            IO_R[2] &= ~0b01000000;
-    }
+void setJoypadInput(keyboard keyPressed){
+    if(keyPressed == '1')
+        IO_R[1] |= 0b1;
+    if(keyPressed == '2')
+        IO_R[1] |= 0b10;
+    if(keyPressed == '3')
+        IO_R[1] |= 0b100;
+    if(keyPressed == 's')
+        IO_R[1] |= 0b10000;
+    if(keyPressed == 'a')
+        IO_R[1] |= 0b100000;
+    if(keyPressed == 'd')
+        IO_R[1] |= 0b1000000;
+    if(keyPressed == 'k')
+        IO_R[2] |= 0b10000;
+    if(keyPressed == 'j')
+        IO_R[2] |= 0b100000;
+    if(keyPressed == 'l')
+        IO_R[2] |= 0b1000000;
+}
 
-    if(isKeyPressed){
-        if(keyPressed == '1')
-            IO_R[1] |= 0b1;
-        if(keyPressed == '2')
-            IO_R[1] |= 0b10;
-        if(keyPressed == '3')
-            IO_R[1] |= 0b100;
-        if(keyPressed == 's')
-            IO_R[1] |= 0b10000;
-        if(keyPressed == 'a')
-            IO_R[1] |= 0b100000;
-        if(keyPressed == 'd')
-            IO_R[1] |= 0b1000000;
-        if(keyPressed == 'k')
-            IO_R[2] |= 0b10000;
-        if(keyPressed == 'j')
-            IO_R[2] |= 0b100000;
-        if(keyPressed == 'l')
-            IO_R[2] |= 0b1000000;
-    }
+void unsetJoypadInput(keyboard keyReleased){
+    if(keyReleased == '1')
+        IO_R[1] &= ~0b00000001;
+    if(keyReleased == '2')
+        IO_R[1] &= ~0b00000010;
+    if(keyReleased == '3')
+        IO_R[1] &= ~0b00000100;
+    if(keyReleased == 's')
+        IO_R[1] &= ~0b00010000;
+    if(keyReleased == 'a')
+        IO_R[1] &= ~0b00100000;
+    if(keyReleased == 'd')
+        IO_R[1] &= ~0b01000000;
+    if(keyReleased == 'k')
+        IO_R[2] &= ~0b00010000;
+    if(keyReleased == 'j')
+        IO_R[2] &= ~0b00100000;
+    if(keyReleased == 'l')
+        IO_R[2] &= ~0b01000000;
 }
 
 void onClose(){

@@ -82,7 +82,7 @@ int main(int argc, char* argv[]){
 
         if(deltaTime > 1000.0f / frameRate){
             frameCount++;
-            isKeyReleased = false;
+
             pmouseX = mouseX;
             pmouseY = mouseY;
             SDL_GetMouseState(&mouseX, &mouseY);
@@ -104,11 +104,13 @@ int main(int argc, char* argv[]){
                 if(event.key.state == SDL_PRESSED){
                     keyPressed = event.key.keysym.sym;
                     isKeyPressed = true;
+                    setJoypadInput(keyPressed);
                 }
 
                 if(event.key.type == SDL_KEYUP){
                     isKeyReleased = true;
                     keyReleased = event.key.keysym.sym;
+                    unsetJoypadInput(keyReleased);
                 }
             }
 

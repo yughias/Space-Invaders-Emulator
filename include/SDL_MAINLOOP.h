@@ -63,5 +63,7 @@ extern void freeSound(Sound*);
 
 //Custom close function
 extern void onClose();
+extern void setJoypadInput();
+extern void unsetJoypadInput();
 
 #endif
