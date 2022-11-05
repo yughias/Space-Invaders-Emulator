@@ -1,31 +1,29 @@
-#include <SDL_MAINLOOP.h>
+#include "SDL_MAINLOOP.H"
 
 #define MAX_NAME  64
 
 unsigned int displayWidth;
 unsigned int displayHeight;
-unsigned int width;
-unsigned int height;
+unsigned int width = 800;
+unsigned int height = 600;
 int* pixels;
 
-unsigned int frameRate;
-unsigned int frameCount;
+unsigned int frameRate = 60;
+unsigned int frameCount = 0;
 float deltaTime;
 
 int pmouseX;
 int pmouseY;
 int mouseX;
 int mouseY;
-bool isMousePressed;
-bool isMouseDragged;
+bool isMousePressed = false;
+bool isMouseDragged = false;
 button mouseButton;
-bool isKeyPressed;
-bool isKeyReleased;
+bool isKeyPressed = false;
+bool isKeyReleased = false;
 keyboard keyPressed;
 keyboard keyReleased;
 
-void setup();
-void loop();
 void size(int, int);
 void fullScreen();
 void background(int, int, int);
@@ -38,6 +36,11 @@ Sound* loadSound(const char*);
 void playSound(Sound*);
 void freeSound(Sound*);
 
+void (*onExit)() = NULL;
+void (*onKeyPressed)(keyboard) = NULL;
+void (*onKeyReleased)(keyboard) = NULL;
+
+// not accessible variables
 SDL_Window* window;
 SDL_Surface* surface;
 bool running = false;
@@ -49,21 +52,12 @@ void SDL_MAINLOOP_HandleAudio();
 
 int main(int argc, char* argv[]){
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
-    isMousePressed = false;
-    isMouseDragged = false;
-    isKeyPressed = false;
-    isKeyReleased = false;
     SDL_DisplayMode displayMode;
     SDL_GetCurrentDisplayMode(0, &displayMode);
     displayWidth = displayMode.w;
     displayHeight = displayMode.h;
-    width = 800;
-    height = 600;
-    frameRate = 60;
-    frameCount = 0;
     strcpy(windowName, "window");
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
-    Mix_Volume(-1, 5);
     setup();
 
     window = SDL_CreateWindow(windowName, 100, 100, width, height, winFlags);
@@ -82,7 +76,6 @@ int main(int argc, char* argv[]){
 
         if(deltaTime > 1000.0f / frameRate){
             frameCount++;
-
             pmouseX = mouseX;
             pmouseY = mouseY;
             SDL_GetMouseState(&mouseX, &mouseY);
@@ -104,13 +97,15 @@ int main(int argc, char* argv[]){
                 if(event.key.state == SDL_PRESSED){
                     keyPressed = event.key.keysym.sym;
                     isKeyPressed = true;
-                    setJoypadInput(keyPressed);
+                    if(onKeyPressed)
+                        (*onKeyPressed)(keyPressed);
                 }
-
+                
                 if(event.key.type == SDL_KEYUP){
                     isKeyReleased = true;
                     keyReleased = event.key.keysym.sym;
-                    unsetJoypadInput(keyReleased);
+                    if(onKeyReleased)
+                        (*onKeyReleased)(keyReleased);
                 }
             }
 
@@ -127,7 +122,9 @@ int main(int argc, char* argv[]){
 
     };
 
-    onClose();
+    if(onExit)
+        (*onExit)();
+
     Mix_CloseAudio();
     SDL_DestroyWindow(window);
     SDL_Quit();

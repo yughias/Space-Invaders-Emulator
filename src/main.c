@@ -2,12 +2,16 @@
 #include <SDL_MAINLOOP.h>
 
 void render();
-void handleInput();
-void onClose();
+void freeAll();
+void setJoypadInput(keyboard);
+void unsetJoypadInput(keyboard);
 
 void setup(){
     frameRate(60);
     setTitle("SPC NVDRS");
+    onKeyPressed = setJoypadInput;
+    onKeyReleased = unsetJoypadInput;
+    onExit = freeAll;
     size(224, 256);
     initCPU();
     initMemory();
@@ -94,7 +98,7 @@ void unsetJoypadInput(keyboard keyReleased){
         IO_R[2] &= ~0b01000000;
 }
 
-void onClose(){
+void freeAll(){
     freeCPU();
     freeMemory();
     freeSounds();

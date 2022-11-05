@@ -1,12 +1,12 @@
 #ifndef _SDL_MAINLOOP_H_
 #define _SDL_MAINLOOP_H_
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_mixer.h"
 
 #define frameRate(x) frameRate = x
 
@@ -61,9 +61,9 @@ extern Sound* loadSound(const char*);
 extern void playSound(Sound*);
 extern void freeSound(Sound*);
 
-//Custom close function
-extern void onClose();
-extern void setJoypadInput();
-extern void unsetJoypadInput();
+// Custom callbacks
+extern void (*onExit)();
+extern void (*onKeyPressed)(keyboard);
+extern void (*onKeyReleased)(keyboard);
 
 #endif
