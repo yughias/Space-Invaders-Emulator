@@ -1,4 +1,5 @@
 #include "SDL_MAINLOOP.H"
+#undef main
 
 #define MAX_NAME  64
 
@@ -79,33 +80,46 @@ int main(int argc, char* argv[]){
             pmouseX = mouseX;
             pmouseY = mouseY;
             SDL_GetMouseState(&mouseX, &mouseY);
+            if(mouseX < 0)
+                mouseX = 0;
+            if(mouseY < 0)
+                mouseY = 0;
             SDL_Event event;
             isKeyReleased = false;
             isKeyPressed = false;
             while(SDL_PollEvent(&event)){
-                if(event.window.event == SDL_WINDOWEVENT_CLOSE || event.key.keysym.sym == SDLK_ESCAPE)
-                    running = 0;
+                switch(event.type){
+                    case SDL_WINDOWEVENT:
+                    if(event.window.event == SDL_WINDOWEVENT_CLOSE)
+                        running = 0;
+                    break;
 
-                if(event.button.type == SDL_MOUSEBUTTONDOWN){
-                    isMousePressed = true;
-                    mouseButton = event.button.button;
-                }
-
-                if(event.button.type == SDL_MOUSEBUTTONUP)
-                    isMousePressed = false;
-
-                if(event.key.state == SDL_PRESSED){
+                    case SDL_KEYDOWN:
                     keyPressed = event.key.keysym.sym;
                     isKeyPressed = true;
+                    
+                    if(event.key.keysym.sym == SDLK_ESCAPE)
+                        running = 0;
+
                     if(onKeyPressed)
                         (*onKeyPressed)(keyPressed);
-                }
-                
-                if(event.key.type == SDL_KEYUP){
+                    break;
+
+                    case SDL_KEYUP:
                     isKeyReleased = true;
                     keyReleased = event.key.keysym.sym;
                     if(onKeyReleased)
                         (*onKeyReleased)(keyReleased);
+                    break;
+
+                    case SDL_MOUSEBUTTONDOWN:
+                    isMousePressed = true;
+                    mouseButton = event.button.button;
+                    break;
+
+                    case SDL_MOUSEBUTTONUP:
+                    isMousePressed = false;
+                    break;
                 }
             }
 
@@ -139,6 +153,9 @@ void size(int w, int h){
 
 void setTitle(const char* name){
     strncpy(windowName, name, MAX_NAME);
+    if(window){
+        SDL_SetWindowTitle(window, windowName);
+    }
 }
 
 Uint64 millis(){
