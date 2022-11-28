@@ -44,22 +44,22 @@ extern bool isKeyReleased;
 extern keyboard keyPressed;
 extern keyboard keyReleased;
 
-extern void setup();
-extern void loop();
-extern void size(int, int);
-extern void setTitle(const char*);
-extern Uint64 millis();
-extern void fullScreen();
-extern void background(int, int, int);
-extern int color(int, int, int);
-extern int red(int);
-extern int green(int);
-extern int blue(int);
+void setup();
+void loop();
+void size(int, int);
+void setTitle(const char*);
+Uint64 millis();
+void fullScreen();
+void background(int, int, int);
+int color(int, int, int);
+int red(int);
+int green(int);
+int blue(int);
 
 // Audio function 
-extern Sound* loadSound(const char*);
-extern void playSound(Sound*);
-extern void freeSound(Sound*);
+Sound* loadSound(const char*);
+void playSound(Sound*);
+void freeSound(Sound*);
 
 // Custom callbacks
 extern void (*onExit)();

@@ -25,18 +25,6 @@ bool isKeyReleased = false;
 keyboard keyPressed;
 keyboard keyReleased;
 
-void size(int, int);
-void fullScreen();
-void background(int, int, int);
-int color(int, int, int);
-int red(int);
-int green(int);
-int blue(int);
-
-Sound* loadSound(const char*);
-void playSound(Sound*);
-void freeSound(Sound*);
-
 void (*onExit)() = NULL;
 void (*onKeyPressed)(keyboard) = NULL;
 void (*onKeyReleased)(keyboard) = NULL;
@@ -47,9 +35,6 @@ SDL_Surface* surface;
 bool running = false;
 Uint32 winFlags = SDL_WINDOW_SHOWN;
 char windowName[64];
-
-void SDL_MAINLOOP_addAudioHandler(SDL_AudioDeviceID, Uint64, Uint64);
-void SDL_MAINLOOP_HandleAudio();
 
 int main(int argc, char* argv[]){
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
