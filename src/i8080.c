@@ -84,7 +84,7 @@ void stepCPU(){
     #ifdef DEBUG
         infoCPU();
     #endif
-    uint16_t index = MEMORY[*PC];
+    uint8_t index = MEMORY[*PC];
     *PC = *PC + table[index].byteLength;
     execute(&tmp_ptr); 
 }
