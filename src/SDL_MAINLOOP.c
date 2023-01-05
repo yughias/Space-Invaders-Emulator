@@ -54,6 +54,7 @@ int main(int argc, char* argv[]){
 
     Uint64 a_clock = SDL_GetPerformanceCounter();
     Uint64 b_clock = SDL_GetPerformanceCounter();
+    deltaTime = 0;
 
     running = true;
     while(running){
@@ -116,9 +117,8 @@ int main(int argc, char* argv[]){
             loop();
             SDL_UpdateWindowSurface(window);
 
-            b_clock = SDL_GetPerformanceCounter();
+            b_clock = a_clock;
         }
-
     };
 
     if(onExit)
