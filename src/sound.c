@@ -1,5 +1,7 @@
 #include <hardware.h>
 
+Sound* sounds[9];
+
 void initSounds(){
     char filename[] = "data/X.wav";
     char soundName = '0';

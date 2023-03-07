@@ -1,6 +1,33 @@
 #include <hardware.h>
 #include <cpu_utility.h>
 
+// check if cpu is working
+bool STOPPED;
+bool INTERRUPT_ENABLED;
+
+// registers in 16 bit mode
+uint16_t* PSW_16;
+uint16_t* B_16;
+uint16_t* D_16;
+uint16_t* H_16;
+
+// registers in 8 bit mode
+uint8_t* A_8;
+uint8_t* F_8;
+uint8_t* B_8;
+uint8_t* C_8;
+uint8_t* D_8;
+uint8_t* E_8;
+uint8_t* H_8;
+uint8_t* L_8;
+
+// other 16 bit registers
+uint16_t* SP;
+uint16_t* PC;
+
+// cycles
+uint64_t cycles;
+
 Opcode table[256] = {
 //        x0                                              x1                                                  x2                                                x3                                               x4                                              x5                                                 x6                                               x7                                              x8                                              x9                                                xA                                                 xB                                                xC                                             xD                                                xE                                               xF     
 /* x0 */ {"NOP",     getNULL,       getNULL,    NOP, 1}, {"LXI B,d16",  getSingleReg16, getImm16,   LXI, 3}, {"STAX B",  getSingleReg16, getNULL,    STAX, 1}, {"INX B",   getSingleReg16, getNULL,    INX,  1}, {"INR B",   getSingleReg8, getNULL,    INR, 1}, {"DCR B",    getSingleReg8,  getNULL,    DCR,  1}, {"MVI B,d8", getDstReg8,    getImm8,    MVI, 2}, {"RLC",     getNULL,       getNULL,    RLC, 1}, {"NOP",     getNULL,       getNULL,    NOP, 1}, {"DAD B",   getSingleReg16, getNULL,    DAD,  1}, {"LDAX B",   getSingleReg16, getNULL,    LDAX, 1}, {"DCX B",   getSingleReg16, getNULL,    DCX,  1}, {"INR C",   getSingleReg8, getNULL,    INR, 1}, {"DCR C",    getSingleReg8, getNULL,    DCR,  1}, {"MVI C,d8", getDstReg8,    getImm8,    MVI, 2}, {"RRC",     getNULL,       getNULL,    RRC, 1},

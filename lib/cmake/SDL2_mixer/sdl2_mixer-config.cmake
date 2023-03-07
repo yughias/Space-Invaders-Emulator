@@ -20,7 +20,7 @@ else()
     set(SDL2MIXER_FLAC              0)
 endif()
 
-set(SDL2MIXER_MOD_MODPLUG           1)
+set(SDL2MIXER_MOD_MODPLUG           0)
 set(SDL2MIXER_MOD_XMP               0)
 set(SDL2MIXER_MOD_XMP_LITE          0)
 if(SDL2MIXER_MOD_MODPLUG OR SDL2MIXER_MOD_XMP OR SDL2MIXER_MOD_XMP_LITE)
@@ -46,7 +46,7 @@ else()
     set(SDL2MIXER_MIDI              0)
 endif()
 
-set(SDL2MIXER_OPUS                  1)
+set(SDL2MIXER_OPUS                  0)
 
 set(SDL2MIXER_VORBIS)
 set(SDL2MIXER_VORBIS_STB            1)

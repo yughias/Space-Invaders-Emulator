@@ -1,5 +1,7 @@
 #include <hardware.h>
 
+uint16_t* SHIFT_16;
+
 void initShifter(){
     SHIFT_16 = malloc(sizeof(uint16_t));
     *SHIFT_16 = 0;

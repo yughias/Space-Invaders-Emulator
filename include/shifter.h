@@ -5,7 +5,7 @@
 #define SHIFTAMNT 0x02
 #define SHIFT_DATA 0x04
 
-uint16_t* SHIFT_16;
+extern uint16_t* SHIFT_16;
 
 void initShifter();
 void updateShifter();

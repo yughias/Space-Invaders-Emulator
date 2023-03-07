@@ -8,12 +8,12 @@
 #define MIRROR_MASK 0x3FFF
 
 // I/0 SPACE
-uint8_t IO_R[IO_R_SIZE];
-uint8_t IO_W[IO_W_SIZE];
-uint8_t IO_W_prev[IO_W_SIZE];
+extern uint8_t IO_R[IO_R_SIZE];
+extern uint8_t IO_W[IO_W_SIZE];
+extern uint8_t IO_W_prev[IO_W_SIZE];
 
 //RAM
-uint8_t* MEMORY;
+extern uint8_t* MEMORY;
 
 void initMemory();
 void loadROM();

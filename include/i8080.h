@@ -14,31 +14,31 @@
 #define CLEAR_C 0b11111110
 
 // check if cpu is working
-bool STOPPED;
-bool INTERRUPT_ENABLED;
+extern bool STOPPED;
+extern bool INTERRUPT_ENABLED;
 
 // registers in 16 bit mode
-uint16_t* PSW_16;
-uint16_t* B_16;
-uint16_t* D_16;
-uint16_t* H_16;
+extern uint16_t* PSW_16;
+extern uint16_t* B_16;
+extern uint16_t* D_16;
+extern uint16_t* H_16;
 
 // registers in 8 bit mode
-uint8_t* A_8;
-uint8_t* F_8;
-uint8_t* B_8;
-uint8_t* C_8;
-uint8_t* D_8;
-uint8_t* E_8;
-uint8_t* H_8;
-uint8_t* L_8;
+extern uint8_t* A_8;
+extern uint8_t* F_8;
+extern uint8_t* B_8;
+extern uint8_t* C_8;
+extern uint8_t* D_8;
+extern uint8_t* E_8;
+extern uint8_t* H_8;
+extern uint8_t* L_8;
 
 // other 16 bit registers
-uint16_t* SP;
-uint16_t* PC;
+extern uint16_t* SP;
+extern uint16_t* PC;
 
 // cycles
-uint64_t cycles;
+extern uint64_t cycles;
 
 typedef struct Opcode {
     char name[15];
@@ -48,7 +48,7 @@ typedef struct Opcode {
     int byteLength;
 } Opcode;
 
-Opcode table[256];
+extern Opcode table[256];
 
 void initCPU();
 void freeCPU();
