@@ -99,7 +99,6 @@ void unsetJoypadInput(keyboard keyReleased){
 }
 
 void freeAll(){
-    freeCPU();
     freeMemory();
     freeSounds();
     freeShifter();

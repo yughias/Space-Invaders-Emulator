@@ -18,10 +18,10 @@ extern bool STOPPED;
 extern bool INTERRUPT_ENABLED;
 
 // registers in 16 bit mode
-extern uint16_t* PSW_16;
-extern uint16_t* B_16;
-extern uint16_t* D_16;
-extern uint16_t* H_16;
+extern uint16_t PSW_16[1];
+extern uint16_t B_16[1];
+extern uint16_t D_16[1];
+extern uint16_t H_16[1];
 
 // registers in 8 bit mode
 extern uint8_t* A_8;
@@ -34,8 +34,8 @@ extern uint8_t* H_8;
 extern uint8_t* L_8;
 
 // other 16 bit registers
-extern uint16_t* SP;
-extern uint16_t* PC;
+extern uint16_t SP[1];
+extern uint16_t PC[1];
 
 // cycles
 extern uint64_t cycles;
@@ -51,7 +51,6 @@ typedef struct Opcode {
 extern Opcode table[256];
 
 void initCPU();
-void freeCPU();
 void infoCPU();
 void stepCPU();
 void execute(uint16_t*);

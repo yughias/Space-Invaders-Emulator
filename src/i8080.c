@@ -6,10 +6,10 @@ bool STOPPED;
 bool INTERRUPT_ENABLED;
 
 // registers in 16 bit mode
-uint16_t* PSW_16;
-uint16_t* B_16;
-uint16_t* D_16;
-uint16_t* H_16;
+uint16_t PSW_16[1];
+uint16_t B_16[1];
+uint16_t D_16[1];
+uint16_t H_16[1];
 
 // registers in 8 bit mode
 uint8_t* A_8;
@@ -22,8 +22,8 @@ uint8_t* H_8;
 uint8_t* L_8;
 
 // other 16 bit registers
-uint16_t* SP;
-uint16_t* PC;
+uint16_t SP[1];
+uint16_t PC[1];
 
 // cycles
 uint64_t cycles;
@@ -50,22 +50,14 @@ Opcode table[256] = {
 
 void initCPU(){
     cycles = 0;
-    // initialize 16 bit registers
-    PSW_16 = malloc(sizeof(uint16_t));
-    B_16 = malloc(sizeof(uint16_t));
-    D_16 = malloc(sizeof(uint16_t));
-    H_16 = malloc(sizeof(uint16_t));
-    SP = malloc(sizeof(uint16_t));
-    PC = malloc(sizeof(uint16_t));
-    // initialize 8 bit registers
-    A_8 = &((uint8_t*)PSW_16)[1];
     F_8 = (uint8_t*)PSW_16;
-    B_8 = &((uint8_t*)B_16)[1];
+    A_8 = F_8 + 1;
     C_8 = (uint8_t*)B_16;
-    D_8 = &((uint8_t*)D_16)[1];
+    B_8 = C_8 + 1;
     E_8 = (uint8_t*)D_16;
-    H_8 = &((uint8_t*)H_16)[1];
+    D_8 = E_8 + 1;
     L_8 = (uint8_t*)H_16;
+    H_8 = L_8 + 1;
     // WARNING: normally registers could have everything inside of it
     // but for clarity, we assume they are empty
     // set everything to 0
@@ -79,15 +71,6 @@ void initCPU(){
     *F_8 |= 0b10;
     STOPPED = false;
     INTERRUPT_ENABLED = false;
-}
-
-void freeCPU(){
-    free(PSW_16);
-    free(B_16);
-    free(D_16);
-    free(H_16);
-    free(SP);
-    free(PC);
 }
 
 void infoCPU(){
