@@ -100,7 +100,7 @@ void stepCPU(){
 }
 
 void execute(uint16_t* ptr){
-    uint16_t index = MEMORY[*ptr];
+    uint8_t index = MEMORY[*ptr];
     void* arg1 = (*table[index].arg1)(ptr);
     void* arg2 = (*table[index].arg2)(ptr);
     (*table[index].instruction)(arg1, arg2);
