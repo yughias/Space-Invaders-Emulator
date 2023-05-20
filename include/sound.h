@@ -5,7 +5,7 @@
 
 #define SOUNDS_SIZE 9
 
-extern Sound* sounds[9];
+extern Sound* sounds[SOUNDS_SIZE];
 
 void initSounds();
 void freeSounds();
