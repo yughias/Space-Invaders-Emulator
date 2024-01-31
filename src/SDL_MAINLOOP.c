@@ -3,6 +3,13 @@
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
+
+// emscripten doesn't include Mix_LoadWAV and Mix_PlayChannel macros 
+#ifdef MAINLOOP_AUDIO
+#define Mix_LoadWAV(file) Mix_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1);
+#define Mix_PlayChannel(channel, chunk, loops) Mix_PlayChannelTimed(channel, chunk, loops, -1);
+#endif
+
 #endif
 
 #define MAX_NAME  64

@@ -6,6 +6,8 @@ debug:
 
 emcc:
 	emcc -Iinclude $(wildcard src/*.c) -O2 \
+	-D MAINLOOP_AUDIO \
 	--preload-file ROM \
+	--preload-file data \
 	-sUSE_SDL=2 -sUSE_SDL_MIXER=2 \
 	-o website/emulator.html
