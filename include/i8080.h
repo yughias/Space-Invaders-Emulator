@@ -40,11 +40,16 @@ extern uint16_t PC[1];
 // cycles
 extern uint64_t cycles;
 
+typedef void* (*getArgFunc)(uint16_t*);
+typedef void (*noArgOpcode)();
+typedef void (*oneArgOpcode)(void*);
+typedef void (*twoArgOpcode)(void*, void*);
+
 typedef struct Opcode {
     char name[15];
-    void* (*arg1)(uint16_t*);
-    void* (*arg2)(uint16_t*);
-    void (*instruction)(void*, void*);
+    getArgFunc arg1;
+    getArgFunc arg2;
+    void* instruction;
     int byteLength;
 } Opcode;
 
@@ -61,8 +66,8 @@ void generateInterrupt(uint8_t);
 // Misc/control instructions
 void NOP();
 void HLT();
-void IN(uint8_t);
-void OUT(uint8_t);
+void OP_IN(uint8_t);
+void OP_OUT(uint8_t);
 void DI();
 void EI();
 

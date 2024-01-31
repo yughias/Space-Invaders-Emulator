@@ -2,7 +2,7 @@
 #include <SDL_MAINLOOP.h>
 
 void updateJoystick();
-void render();
+void displayScreen();
 void freeAll();
 
 void setup(){
@@ -10,6 +10,7 @@ void setup(){
     setTitle("SPC NVDRS");
     onExit = freeAll;
     size(224, 256);
+    setScaleMode(NEAREST);
     initCPU();
     initMemory();
     initSounds();
@@ -36,10 +37,10 @@ void loop(){
         handleSounds();
     }
     generateInterrupt(0x10);
-    render();
+    displayScreen();
 }
 
-void render(){
+void displayScreen(){
     for(int y = 0; y < 224; y++){
         for(int byte = 0; byte < 32; byte++){
             for(int i = 0; i < 8; i++){
