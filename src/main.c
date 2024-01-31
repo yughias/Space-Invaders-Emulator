@@ -18,8 +18,7 @@ void setup(){
     loadROM();
     #ifdef DEBUG
         freopen("log.txt", "w", stderr);
-    #endif
-       
+    #endif 
 }
 
 void loop(){
@@ -37,6 +36,7 @@ void loop(){
         handleSounds();
     }
     generateInterrupt(0x10);
+    
     displayScreen();
 }
 

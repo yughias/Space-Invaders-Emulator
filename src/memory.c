@@ -37,7 +37,10 @@ void loadROM(){
 }
 
 uint16_t addrMirror(uint16_t addr){
-    if(addr >= MEMORY_SIZE)
-        addr = (addr & MIRROR_MASK) + 0x2000;
+    // after 1 << 14 byte, everything is mapped to vram
+    // definitely, i must write a better function
+    if(addr >= MEMORY_SIZE){
+        addr = ((addr - 0x2000) & MIRROR_MASK) + MEMORY_SIZE;
+    }
     return addr;
 }
