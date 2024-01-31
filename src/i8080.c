@@ -439,17 +439,10 @@ void INX(uint16_t* r16){
 }
 
 void DAD(uint16_t* r16){
-    bool carry = false;
+    bool carry;
 
-    asm(
-        "addw %%bx, %%ax;"
-        "adcb $0, %%cl;"
-        :"=a"(*H_16),
-         "=c"(carry)
-        :"a"(*H_16),
-         "b"(*r16),
-         "c"(carry)
-    );
+    *H_16 += *r16;
+    carry = *H_16 < *r16;
 
     if(carry)
         *F_8 |= SET_C;
@@ -483,16 +476,9 @@ void DCR(uint8_t* m8){
 }
 
 void RLC(){
-    bool carry = false;
+    bool carry = *A_8 >> 7;
 
-    asm(
-        "rolb $1, %%al;"
-        "adc $0, %%cl;"
-        :"=a"(*A_8),
-         "=c"(carry)
-        :"a"(*A_8),
-         "c"(carry)
-    );
+    *A_8 = (*A_8 << 1) | carry;
 
     if(carry)
         *F_8 |= SET_C;
@@ -502,21 +488,10 @@ void RLC(){
 }
 
 void RAL(){
-    bool out_carry = false;
-    uint8_t in_carry = 0;
-    if(*F_8 & SET_C)
-        in_carry = 0xFF;
+    bool in_carry = *F_8 & SET_C;
+    bool out_carry = *A_8 >> 7;
 
-    asm(
-        "addb $1, %%bl;"
-        "rclb $1, %%al;"
-        "adc $0, %%cl;"
-        :"=a"(*A_8),
-         "=c"(out_carry)
-        :"a"(*A_8),
-         "b"(in_carry),
-         "c"(out_carry)
-    );
+    *A_8 = (*A_8 << 1) | in_carry;
 
     if(out_carry)
         *F_8 |= SET_C;
@@ -526,16 +501,8 @@ void RAL(){
 }
 
 void RRC(){
-    bool carry = false;
-
-    asm(
-        "rorb $1, %%al;"
-        "adc $0, %%cl;"
-        :"=a"(*A_8),
-         "=c"(carry)
-        :"a"(*A_8),
-         "c"(carry)
-    );
+    bool carry = *A_8 & 1;
+    *A_8 = (*A_8 >> 1) | (carry << 7);
 
     if(carry)
         *F_8 |= SET_C;
@@ -545,21 +512,10 @@ void RRC(){
 }
 
 void RAR(){
-    bool out_carry = false;
-    uint8_t in_carry = 0;
-    if(*F_8 & SET_C)
-        in_carry = 0xFF;
+    bool in_carry = *F_8 & SET_C;
+    bool out_carry = *A_8 & 1;
 
-    asm(
-        "addb $1, %%bl;"
-        "rcrb $1, %%al;"
-        "adc $0, %%cl;"
-        :"=a"(*A_8),
-         "=c"(out_carry)
-        :"a"(*A_8),
-         "b"(in_carry),
-         "c"(out_carry)
-    );
+    *A_8 = (*A_8 >> 1) | (in_carry << 7);
 
     if(out_carry)
         *F_8 |= SET_C;
@@ -614,17 +570,10 @@ void CMA(){
 
 void ADD(uint8_t* m8){
     uint8_t old_lower = (*A_8) & 0xF;
-    bool out_carry = false;
-    
-    asm(
-        "addb %%dl, %%al;"
-        "adcb $0, %%cl;"
-        :"=a"(*A_8),
-         "=c"(out_carry)
-        :"a"(*A_8),
-         "c"(out_carry),
-         "d"(*m8)
-    );
+    bool out_carry;
+
+    *A_8 += *m8;
+    out_carry = *A_8 < *m8;
 
     if( ((*A_8) & 0xF) < old_lower)
         *F_8 |= SET_A;
@@ -643,23 +592,12 @@ void ADD(uint8_t* m8){
 }
 
 void ADC(uint8_t* m8){
-    uint8_t old_lower = (*A_8) & 0xF;
+    uint8_t old_lower = *A_8 & 0xF;
     bool out_carry = false;
-    uint8_t in_carry = 0;
-    if((*F_8) & SET_C)
-        in_carry = 0xFF;
+    bool in_carry = *F_8 & SET_C;
     
-    asm(
-        "addb $1, %%bl;"
-        "adcb %%dl, %%al;"
-        "adcb $0, %%cl;"
-        :"=a"(*A_8),
-         "=c"(out_carry)
-        :"a"(*A_8),
-         "b"(in_carry),
-         "c"(out_carry),
-         "d"(*m8)
-    );
+    *A_8 += *m8 + in_carry;
+    out_carry = *A_8 < *m8;
 
     if( ((*A_8) & 0xF) < old_lower)
         *F_8 |= SET_A;
@@ -678,58 +616,17 @@ void ADC(uint8_t* m8){
 }
 
 void SUB(uint8_t* m8){
-    bool out_carry = false;
-
-    asm(
-        "negb %%dl;"
-        "addb %%dl, %%al;"
-        "adcb $0, %%cl;"
-        :"=a"(*A_8),
-         "=c"(out_carry)
-        :"a"(*A_8),
-         "c"(out_carry),
-         "d"(*m8)
-    );
-
-    if(!out_carry)
-        *F_8 |= SET_C;
-    else
-        *F_8 &= CLEAR_C;
-
-    setSign8Bit(*A_8);
-    setZero(*A_8);
-    setParity(*A_8);
-    cycles += 4;
+    uint8_t tmp = (~*m8) + 1;
+    ADD(&tmp);
+    CMC();
+    cycles -= 4;
 }
 
 void SBB(uint8_t* m8){
-    bool out_carry = false;
-    uint8_t in_carry = 0x00;
-    if(*(F_8) & SET_C)
-        in_carry = 0x01;
-    
-    asm(
-        "addb %%bl, %%dl;"
-        "neg %%dl;"
-        "addb %%dl, %%al;"
-        "adcb $0, %%cl;"
-        :"=a"(*A_8),
-         "=c"(out_carry)
-        :"a"(*A_8),
-         "b"(in_carry),
-         "c"(out_carry),
-         "d"(*m8)
-    );
-
-    if(!out_carry)
-        *F_8 |= SET_C;
-    else
-        *F_8 &= CLEAR_C;
-
-    setSign8Bit(*A_8);
-    setZero(*A_8);
-    setParity(*A_8);
-    cycles += 4;
+    uint8_t tmp = (~*m8) + 1;
+    ADC(&tmp);
+    CMC();
+    cycles -= 4;   
 }
 
 void ANA(uint8_t* m8){
