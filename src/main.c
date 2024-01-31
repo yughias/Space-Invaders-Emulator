@@ -1,16 +1,13 @@
 #include <hardware.h>
 #include <SDL_MAINLOOP.h>
 
+void updateJoystick();
 void render();
 void freeAll();
-void setJoypadInput(keyboard);
-void unsetJoypadInput(keyboard);
 
 void setup(){
     frameRate(60);
     setTitle("SPC NVDRS");
-    onKeyPressed = setJoypadInput;
-    onKeyReleased = unsetJoypadInput;
     onExit = freeAll;
     size(224, 256);
     initCPU();
@@ -25,6 +22,8 @@ void setup(){
 }
 
 void loop(){
+    updateJoystick();
+
     bool midInterrupt = false;
     for(cycles = 0; cycles < 2 * 1e6 / 60;){
         memcpy(IO_W_prev, IO_W, IO_W_SIZE);
@@ -56,46 +55,37 @@ void render(){
     }
 }
 
-void setJoypadInput(keyboard keyPressed){
-    if(keyPressed == '1')
-        IO_R[1] |= 0b1;
-    if(keyPressed == '2')
-        IO_R[1] |= 0b10;
-    if(keyPressed == '3')
-        IO_R[1] |= 0b100;
-    if(keyPressed == 's')
-        IO_R[1] |= 0b10000;
-    if(keyPressed == 'a')
-        IO_R[1] |= 0b100000;
-    if(keyPressed == 'd')
-        IO_R[1] |= 0b1000000;
-    if(keyPressed == 'k')
-        IO_R[2] |= 0b10000;
-    if(keyPressed == 'j')
-        IO_R[2] |= 0b100000;
-    if(keyPressed == 'l')
-        IO_R[2] |= 0b1000000;
-}
+void updateJoystick(){
+    const Uint8* keyState = SDL_GetKeyboardState(NULL);
 
-void unsetJoypadInput(keyboard keyReleased){
-    if(keyReleased == '1')
-        IO_R[1] &= ~0b00000001;
-    if(keyReleased == '2')
-        IO_R[1] &= ~0b00000010;
-    if(keyReleased == '3')
-        IO_R[1] &= ~0b00000100;
-    if(keyReleased == 's')
-        IO_R[1] &= ~0b00010000;
-    if(keyReleased == 'a')
-        IO_R[1] &= ~0b00100000;
-    if(keyReleased == 'd')
-        IO_R[1] &= ~0b01000000;
-    if(keyReleased == 'k')
-        IO_R[2] &= ~0b00010000;
-    if(keyReleased == 'j')
-        IO_R[2] &= ~0b00100000;
-    if(keyReleased == 'l')
-        IO_R[2] &= ~0b01000000;
+    IO_R[1] = 0x00;
+    IO_R[2] = 0x00;
+
+    // coin
+    if(keyState[SDL_SCANCODE_LSHIFT] || keyState[SDL_SCANCODE_RSHIFT])
+        IO_R[1] |= 0b1;
+
+    // start
+    if(keyState[SDL_SCANCODE_2])
+        IO_R[1] |= 0b10;
+    if(keyState[SDL_SCANCODE_1])
+        IO_R[1] |= 0b100;
+    
+    // player 1
+    if(keyState[SDL_SCANCODE_S])
+        IO_R[1] |= 0b10000;
+    if(keyState[SDL_SCANCODE_A])
+        IO_R[1] |= 0b100000;
+    if(keyState[SDL_SCANCODE_D])
+        IO_R[1] |= 0b1000000;
+
+    // player 2
+    if(keyState[SDL_SCANCODE_K])
+        IO_R[2] |= 0b10000;
+    if(keyState[SDL_SCANCODE_J])
+        IO_R[2] |= 0b100000;
+    if(keyState[SDL_SCANCODE_L])
+        IO_R[2] |= 0b1000000;
 }
 
 void freeAll(){
