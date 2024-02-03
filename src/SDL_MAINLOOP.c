@@ -147,6 +147,36 @@ void updateMenuVect(HMENU, bool);
 void mainloop();
 void render();
 
+// variables used for run loop at correct framerate
+#ifndef __EMSCRIPTEN__
+Uint64 a_clock;
+Uint64 b_clock;
+#else
+double a_clock;
+double b_clock;
+
+void emscripten_mainloop(){
+    float millis_per_frame = 1000.0 / frameRate;
+    float elapsed;
+    b_clock = emscripten_get_now();
+    elapsed = b_clock - a_clock;
+    deltaTime += elapsed;
+    a_clock = b_clock;
+    while(deltaTime >= millis_per_frame){
+        b_clock = emscripten_get_now();
+        mainloop();
+        elapsed = b_clock - a_clock;
+        a_clock = b_clock;
+        // if mainloop lasted for more than millis_per_frame
+        // immediately end to avoid infinite lag!
+        if(elapsed > millis_per_frame)
+            deltaTime = 0;
+        else 
+            deltaTime -= millis_per_frame;
+    }   
+}
+#endif
+
 int main(int argc, char* argv[]){
     main_argc = argc;
     main_argv = argv;
@@ -229,12 +259,14 @@ int main(int argc, char* argv[]){
     height = surface->h;
     #endif
 
-    #ifdef __EMSCRIPTEN__
-    emscripten_set_main_loop(mainloop, frameRate, 1);
-    #else 
-    Uint64 a_clock = SDL_GetPerformanceCounter();
-    Uint64 b_clock = SDL_GetPerformanceCounter();
     deltaTime = 0;
+    #ifdef __EMSCRIPTEN__
+    a_clock = emscripten_get_now();
+    b_clock = emscripten_get_now();
+    emscripten_set_main_loop(emscripten_mainloop, 0, 1);
+    #else 
+    a_clock = SDL_GetPerformanceCounter();
+    b_clock = SDL_GetPerformanceCounter();
 
     running = true;
     while(running){
